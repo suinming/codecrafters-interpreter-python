@@ -16,6 +16,7 @@ def main():
     with open(filename) as file:
         file_contents = file.read()
 
+    invalid_token_exist = False
     for c in file_contents:
         if c == "(":
             print("LEFT_PAREN ( null")
@@ -37,8 +38,20 @@ def main():
             print("MINUS - null")
         elif c == ";":
             print("SEMICOLON ; null")
+        else:
+            # invalid token
+            invalid_token_exist = True
+            print(
+                f"[line 1] Error: Unexpected character: {c}",
+                file=sys.stderr,
+            )
 
     print("EOF  null")
+
+    if invalid_token_exist:
+        exit(65)
+    else:
+        exit(0)
 
 
 if __name__ == "__main__":
