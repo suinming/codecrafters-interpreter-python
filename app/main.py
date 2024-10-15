@@ -16,42 +16,40 @@ def main():
     with open(filename) as file:
         file_contents = file.read()
 
+    # general token
+    t = {
+        "(": "LEFT_PAREN",
+        ")": "RIGHT_PAREN",
+        "{": "LEFT_BRACE",
+        "}": "RIGHT_BRACE",
+        "*": "STAR",
+        ".": "DOT",
+        ",": "COMMA",
+        "+": "PLUS",
+        "-": "MINUS",
+        ";": "SEMICOLON",
+    }
+    # token need advanced check
+    t_advanced = {
+        "=": "EQUAL",
+        "!": "BANG",
+        "<": "LESS",
+        ">": "GREATER",
+    }
+
     invalid_token_exist = False
     p = 0
+
     while len(file_contents):
         c = file_contents[p]
-        if c == "(":
-            print("LEFT_PAREN ( null")
-        elif c == ")":
-            print("RIGHT_PAREN ) null")
-        elif c == "{":
-            print("LEFT_BRACE { null")
-        elif c == "}":
-            print("RIGHT_BRACE } null")
-        elif c == "*":
-            print("STAR * null")
-        elif c == ".":
-            print("DOT . null")
-        elif c == ",":
-            print("COMMA , null")
-        elif c == "+":
-            print("PLUS + null")
-        elif c == "-":
-            print("MINUS - null")
-        elif c == ";":
-            print("SEMICOLON ; null")
-        elif c == "=":
+        if t.get(c):
+            print(f"{t.get(c)} {c} null")
+        elif t_advanced.get(c):
             if p + 1 < len(file_contents) and file_contents[p + 1] == "=":
-                print("EQUAL_EQUAL == null")
+                print(f"{t_advanced.get(c)}_EQUAL {c}= null")
                 p += 1
             else:
-                print("EQUAL = null")
-        elif c == "!":
-            if p + 1 < len(file_contents) and file_contents[p + 1] == "=":
-                print("BANG_EQUAL != null")
-                p += 1
-            else:
-                print("BANG ! null")
+                print(f"{t_advanced.get(c)} {c} null")
         else:
             # invalid token
             invalid_token_exist = True
