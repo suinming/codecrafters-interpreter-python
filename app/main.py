@@ -17,7 +17,9 @@ def main():
         file_contents = file.read()
 
     invalid_token_exist = False
-    for c in file_contents:
+    p = 0
+    while len(file_contents):
+        c = file_contents[p]
         if c == "(":
             print("LEFT_PAREN ( null")
         elif c == ")":
@@ -38,6 +40,12 @@ def main():
             print("MINUS - null")
         elif c == ";":
             print("SEMICOLON ; null")
+        elif c == "=":
+            if p + 1 < len(file_contents) and file_contents[p + 1] == "=":
+                print("EQUAL_EQUAL == null")
+                p += 1
+            else:
+                print("EQUAL = null")
         else:
             # invalid token
             invalid_token_exist = True
@@ -45,6 +53,12 @@ def main():
                 f"[line 1] Error: Unexpected character: {c}",
                 file=sys.stderr,
             )
+
+        # increment pointer
+        if p + 1 < len(file_contents):
+            p += 1
+        else:
+            break
 
     print("EOF  null")
 
