@@ -18,14 +18,27 @@ def main():
 
     for c in file_contents:
         if c == "(":
-            print('LEFT_PAREN ( null')
+            print("LEFT_PAREN ( null")
         elif c == ")":
-            print('RIGHT_PAREN ) null')
+            print("RIGHT_PAREN ) null")
         elif c == "{":
-            print('LEFT_BRACE { null')
+            print("LEFT_BRACE { null")
         elif c == "}":
-            print('RIGHT_BRACE } null')
-    print("EOF  null") 
+            print("RIGHT_BRACE } null")
+        elif c == "*":
+            print("STAR * null")
+        elif c == ".":
+            print("DOT . null")
+        elif c == ",":
+            print("COMMA , null")
+        elif c == "+":
+            print("PLUS + null")
+        elif c == "-":
+            print("MINUS - null")
+        elif c == ";":
+            print("SEMICOLON ; null")
+
+    print("EOF  null")
 
 
 if __name__ == "__main__":
