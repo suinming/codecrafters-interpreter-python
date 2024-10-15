@@ -46,6 +46,12 @@ def main():
                 p += 1
             else:
                 print("EQUAL = null")
+        elif c == "!":
+            if p + 1 < len(file_contents) and file_contents[p + 1] == "=":
+                print("BANG_EQUAL != null")
+                p += 1
+            else:
+                print("BANG ! null")
         else:
             # invalid token
             invalid_token_exist = True
