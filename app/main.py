@@ -28,6 +28,7 @@ def main():
         "+": "PLUS",
         "-": "MINUS",
         ";": "SEMICOLON",
+        "/": "SLASH",
     }
     # token need advanced check
     t_advanced = {
@@ -43,7 +44,11 @@ def main():
     while len(file_contents):
         c = file_contents[p]
         if t.get(c):
-            print(f"{t.get(c)} {c} null")
+            if p + 1 < len(file_contents) and file_contents[p] == "/" and file_contents[p + 1] == "/":
+                # if comment detect ignore the remaining characters
+                break
+            else:
+                print(f"{t.get(c)} {c} null")
         elif t_advanced.get(c):
             if p + 1 < len(file_contents) and file_contents[p + 1] == "=":
                 print(f"{t_advanced.get(c)}_EQUAL {c}= null")
