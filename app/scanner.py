@@ -1,5 +1,7 @@
 import sys
 
+from app.constants import KEYWORDS, TOKEN_MATCH_TAB, TOKEN_TAB
+
 
 class Scanner:
     def __init__(self, file: str):
@@ -8,42 +10,9 @@ class Scanner:
         self.cur = 0
         self.line = 1
         self.invalid_token_exist = False
-        self.token_tab = {
-            "(": "LEFT_PAREN",
-            ")": "RIGHT_PAREN",
-            "{": "LEFT_BRACE",
-            "}": "RIGHT_BRACE",
-            "*": "STAR",
-            ".": "DOT",
-            ",": "COMMA",
-            "+": "PLUS",
-            "-": "MINUS",
-            ";": "SEMICOLON",
-        }
-        self.token_match_tab = {
-            "=": "EQUAL",
-            "!": "BANG",
-            "<": "LESS",
-            ">": "GREATER",
-        }
-        self.keywords = {
-            "and": "AND",
-            "class": "CLASS",
-            "else": "ELSE",
-            "false": "FALSE",
-            "for": "FOR",
-            "fun": "FUN",
-            "if": "IF",
-            "nil": "NIL",
-            "or": "OR",
-            "print": "PRINT",
-            "return": "RETURN",
-            "super": "SUPER",
-            "this": "THIS",
-            "true": "TRUE",
-            "var": "VAR",
-            "while": "WHILE",
-        }
+        self.token_tab = TOKEN_TAB
+        self.token_match_tab = TOKEN_MATCH_TAB
+        self.keywords = KEYWORDS
 
     def advance(self) -> str:
         c = self.file[self.cur]
@@ -130,11 +99,12 @@ class Scanner:
         while self.is_alpha_numeric(self.peek()):
             self.advance()
         text = self.file[self.start : self.cur]
-        self.add_token("IDENTIFIER", text, "null")
-        # token_type = self.keywords.get(text, None)
+        token_type = self.keywords.get(text, None)
         # check if token exist in the keywords table. Otherwise, it’s a regular user-defined identifier.
-        # if token_type:
-        #     self.add_token("IDENTIFIER", self.file[self.start : self.cur], "null")
+        if token_type:
+            self.add_token(token_type, self.file[self.start : self.cur], "null")
+        else:
+            self.add_token("IDENTIFIER", self.file[self.start : self.cur], "null")
 
     def scan_token(self):
         c: str = self.advance()
