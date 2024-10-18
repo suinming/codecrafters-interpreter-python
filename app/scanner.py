@@ -94,7 +94,7 @@ class Scanner:
                 self.advance()
 
         self.add_token(
-            "NUMBER", self.file[self.start : self.cur], self.file[self.start : self.cur]
+            "NUMBER", self.file[self.start : self.cur], float(self.file[self.start : self.cur])
         )
 
     def scan_token(self):
