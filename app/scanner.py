@@ -32,14 +32,20 @@ class Scanner:
         self.cur += 1
         return c
 
+    def is_at_end(self) -> bool:
+        return self.cur >= len(self.file)
+
     def peek(self):
         """like the advance, but do not consume the character"""
         if self.is_at_end():
             return "\0"
         return self.file[self.cur]
 
-    def is_at_end(self) -> bool:
-        return self.cur >= len(self.file)
+    def peek_next(self):
+        """check the token at pointer=(self.cur + 1)"""
+        if self.cur + 1 >= len(self.file):
+            return "\0"
+        return self.file[self.cur + 1]
 
     def add_token(self, token_type: str, lexeme: str, literal="null"):
         print(f"{token_type} {lexeme} {literal}")
@@ -71,6 +77,26 @@ class Scanner:
         complete_str = self.file[self.start + 1 : self.cur - 1]
         self.add_token("STRING", complete_str_with_quotes, complete_str)
 
+    def is_digit(self, c: str) -> bool:
+        """if the ASCII of c is within '0' and '9' then c is a digit"""
+        return "0" <= c <= "9"
+
+    def number(self):
+        while self.is_digit(self.peek()):
+            self.advance()
+
+        # make sure the token after "." is a digit
+        if self.peek() == "." and self.is_digit(self.peek_next()):
+            # consume the "." token
+            self.advance()
+            # fraction part
+            while self.is_digit(self.peek()):
+                self.advance()
+
+        self.add_token(
+            "NUMBER", self.file[self.start : self.cur], self.file[self.start : self.cur]
+        )
+
     def scan_token(self):
         c: str = self.advance()
         if c in self.token_tab:
@@ -95,11 +121,14 @@ class Scanner:
         elif c == '"':
             self.string()
         else:
-            self.invalid_token_exist = True
-            print(
-                f"[line {self.line}] Error: Unexpected character: {c}",
-                file=sys.stderr,
-            )
+            if self.is_digit(c):
+                self.number()
+            else:
+                self.invalid_token_exist = True
+                print(
+                    f"[line {self.line}] Error: Unexpected character: {c}",
+                    file=sys.stderr,
+                )
 
     def scan_tokens(self):
         while not self.is_at_end():
