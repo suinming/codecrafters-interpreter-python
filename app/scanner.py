@@ -26,6 +26,24 @@ class Scanner:
             "<": "LESS",
             ">": "GREATER",
         }
+        self.keywords = {
+            "and": "AND",
+            "class": "CLASS",
+            "else": "ELSE",
+            "false": "FALSE",
+            "for": "FOR",
+            "fun": "FUN",
+            "if": "IF",
+            "nil": "NIL",
+            "or": "OR",
+            "print": "PRINT",
+            "return": "RETURN",
+            "super": "SUPER",
+            "this": "THIS",
+            "true": "TRUE",
+            "var": "VAR",
+            "while": "WHILE",
+        }
 
     def advance(self) -> str:
         c = self.file[self.cur]
@@ -47,7 +65,7 @@ class Scanner:
             return "\0"
         return self.file[self.cur + 1]
 
-    def add_token(self, token_type: str, lexeme: str, literal="null"):
+    def add_token(self, token_type: str, lexeme: str, literal: str | float = "null"):
         print(f"{token_type} {lexeme} {literal}")
 
     def match(self, expected_token) -> bool:
@@ -94,8 +112,29 @@ class Scanner:
                 self.advance()
 
         self.add_token(
-            "NUMBER", self.file[self.start : self.cur], float(self.file[self.start : self.cur])
+            "NUMBER",
+            self.file[self.start : self.cur],
+            float(self.file[self.start : self.cur]),
         )
+
+    def is_alpha(self, c: str) -> bool:
+        is_lower_case_alpha = True if "a" <= c <= "z" else False
+        is_capital_case_alpha = True if "A" <= c <= "Z" else False
+        is_underline = True if c == "_" else False
+        return is_lower_case_alpha or is_capital_case_alpha or is_underline
+
+    def is_alpha_numeric(self, c: str) -> bool:
+        return self.is_alpha(c) or self.is_digit(c)
+
+    def identifier(self):
+        while self.is_alpha_numeric(self.peek()):
+            self.advance()
+        text = self.file[self.start : self.cur]
+        self.add_token("IDENTIFIER", text, "null")
+        # token_type = self.keywords.get(text, None)
+        # check if token exist in the keywords table. Otherwise, it’s a regular user-defined identifier.
+        # if token_type:
+        #     self.add_token("IDENTIFIER", self.file[self.start : self.cur], "null")
 
     def scan_token(self):
         c: str = self.advance()
@@ -123,6 +162,8 @@ class Scanner:
         else:
             if self.is_digit(c):
                 self.number()
+            elif self.is_alpha(c):
+                self.identifier()
             else:
                 self.invalid_token_exist = True
                 print(
