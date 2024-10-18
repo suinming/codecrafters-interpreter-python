@@ -41,8 +41,8 @@ class Scanner:
     def is_at_end(self) -> bool:
         return self.cur >= len(self.file)
 
-    def add_token(self, token: str, token_name: str):
-        print(f"{token_name} {token} null")
+    def add_token(self, token_type: str, lexeme: str, literal="null"):
+        print(f"{token_type} {lexeme} {literal}")
 
     def match(self, expected_token) -> bool:
         if self.is_at_end():
@@ -52,28 +52,48 @@ class Scanner:
         self.cur += 1
         return True
 
+    def string(self):
+        while self.peek() != '"' and not self.is_at_end():
+            self.advance()
+
+        if self.is_at_end():
+            print(
+                f"[line {self.line}] Error: Unterminated string.",
+                file=sys.stderr,
+            )
+            self.invalid_token_exist = True
+            return
+
+        # get the closing quote
+        self.advance()
+
+        complete_str_with_quotes = self.file[self.start : self.cur]
+        complete_str = self.file[self.start + 1 : self.cur - 1]
+        self.add_token("STRING", complete_str_with_quotes, complete_str)
+
     def scan_token(self):
         c: str = self.advance()
         if c in self.token_tab:
-            self.add_token(token=c, token_name=self.token_tab.get(c, ""))
+            self.add_token(self.token_tab.get(c, ""), c)
         elif c in self.token_match_tab:
-            token: str = c
-            token_name: str = self.token_match_tab.get(c, "")
+            token_type: str = self.token_match_tab.get(c, "")
             if self.match("="):
-                self.add_token(token=f"{token}=", token_name=f"{token_name}_EQUAL")
+                self.add_token(f"{token_type}_EQUAL", f"{c}=")
             else:
-                self.add_token(token=c, token_name=token_name)
+                self.add_token(token_type, c)
         elif c == "/":
             if self.match("/"):
                 # detect the comment syntax(which is "//"), and comment go until the end of the line
                 while self.peek() != "\n" and not self.is_at_end():
                     self.advance()
             else:
-                self.add_token(token=c, token_name="SLASH")
+                self.add_token("SLASH", c)
         elif c in [" ", "\t", "\r"]:
             pass
         elif c == "\n":
             self.line += 1
+        elif c == '"':
+            self.string()
         else:
             self.invalid_token_exist = True
             print(
