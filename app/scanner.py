@@ -77,7 +77,7 @@ class Scanner:
         else:
             self.invalid_token_exist = True
             print(
-                f"[line 1] Error: Unexpected character: {c}",
+                f"[line {self.line}] Error: Unexpected character: {c}",
                 file=sys.stderr,
             )
 
