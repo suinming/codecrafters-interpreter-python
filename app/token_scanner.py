@@ -3,7 +3,7 @@ import sys
 from app.constants import KEYWORDS, TOKEN_MATCH_TAB, TOKEN_TAB
 
 
-class Scanner:
+class TokenScanner:
     def __init__(self, file: str):
         self.file = file
         self.start = 0
@@ -19,13 +19,6 @@ class Scanner:
         while not self.is_at_end():
             self.start = self.cur
             self.scan_token()
-
-        print("EOF  null")
-
-        if self.invalid_token_exist:
-            exit(65)
-        else:
-            exit(0)
 
     def scan_token(self):
         c: str = self.advance()
@@ -86,7 +79,6 @@ class Scanner:
         self.tokens.append(
             {"token_type": token_type, "lexeme": lexeme, "literal": literal}
         )
-        print(f"{token_type} {lexeme} {literal}")
 
     def match(self, expected_token) -> bool:
         if self.is_at_end():
