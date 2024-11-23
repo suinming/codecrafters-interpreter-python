@@ -103,6 +103,8 @@ class Parser:
             return Literal(True)
         if self.match("NIL"):
             return Literal(None)
+        if self.match("NUMBER", "STRING"):
+            return Literal(self.previous()["literal"])
 
     def match(self, *token_types: str) -> bool:
         for token_type in token_types:
