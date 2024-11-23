@@ -15,8 +15,11 @@ def Binary(left, operator, right):
     return {"left": left, "operator": operator, "right": right}
 
 
-def Grouping(expression):
-    return {"expression": expression}
+def Grouping(expression, type: str):
+    if type == "PAREN":
+        return "(group " + expression + ")"
+    if type == "BRACE":
+        return "{group " + expression + "}"
 
 
 def Literal(value):
@@ -105,6 +108,12 @@ class Parser:
             return Literal(None)
         if self.match("NUMBER", "STRING"):
             return Literal(self.previous()["literal"])
+        if self.match("LEFT_PAREN"):
+            expr = self.expression()
+            return Grouping(expr, "PAREN")
+        if self.match("LEFT_BRACE"):
+            expr = self.expression()
+            return Grouping(expr, "BRACE")
 
     def match(self, *token_types: str) -> bool:
         for token_type in token_types:
