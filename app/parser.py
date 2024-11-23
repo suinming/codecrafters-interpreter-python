@@ -29,7 +29,8 @@ def Literal(value):
 
 
 def Unary(operator, right):
-    return {"operator": operator, "right": right}
+    if "lexeme" in operator:
+        return f"({operator["lexeme"]} {right})"
 
 
 class TokenDict(TypedDict):
