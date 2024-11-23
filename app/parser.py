@@ -12,14 +12,16 @@ from typing import List, TypedDict
 
 
 def Binary(left, operator, right):
-    return {"left": left, "operator": operator, "right": right}
+    # return {"left": left, "operator": operator, "right": right}
+    if "lexeme" in operator:
+        return f"({operator["lexeme"]} {left} {right})"
 
 
 def Grouping(expression, type: str):
     if type == "PAREN":
-        return "(group " + expression + ")"
+        return f"(group {expression})" 
     if type == "BRACE":
-        return "{group " + expression + "}"
+        return f"{{group {expression}}}" 
 
 
 def Literal(value):
